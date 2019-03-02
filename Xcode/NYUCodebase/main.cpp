@@ -59,8 +59,10 @@ int main(int argc, char *argv[])
     glViewport(0, 0, 640, 360);
     
     ShaderProgram program;
-    //program.Load(RESOURCE_FOLDER"vertex.glsl", RESOURCE_FOLDER"fragment.glsl");
+    ShaderProgram programNonText;
+   
     program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
+    programNonText.Load(RESOURCE_FOLDER"vertex.glsl", RESOURCE_FOLDER"fragment.glsl");
     
     GLuint redPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeGreen1.png");
     
@@ -73,6 +75,7 @@ int main(int argc, char *argv[])
     
     projectionMatrix = glm::ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
     
+    glUseProgram(programNonText.programID);
     glUseProgram(program.programID);
     
     glClearColor(0.3f, 0.8f, 0.9f, 1.0f);
@@ -97,26 +100,25 @@ int main(int argc, char *argv[])
         program.SetViewMatrix(viewMatrix);
         
         
-        
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.8f, 0.0f));
-        program.SetModelMatrix(modelMatrix);
+        programNonText.SetModelMatrix(modelMatrix);
+        programNonText.SetProjectionMatrix(projectionMatrix);
+        programNonText.SetViewMatrix(viewMatrix);
         
         
         // Drawing floor
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.8f, 0.0f));
+        programNonText.SetModelMatrix(modelMatrix);
+        
         float floor[] = {-1.777, -0.2, 1.777, -0.2, 1.777, 0.2, -1.777, -0.2, 1.777, 0.2, -1.777, 0.2};
-        program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
-        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, floor);
-        glEnableVertexAttribArray(program.positionAttribute);
-        
+        programNonText.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
+        glVertexAttribPointer(programNonText.positionAttribute, 2, GL_FLOAT, false, 0, floor);
+        glEnableVertexAttribArray(programNonText.positionAttribute);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        
-        glDisableVertexAttribArray(program.positionAttribute);
+        glDisableVertexAttribArray(programNonText.positionAttribute);
         
         
        
-        
-        
         
         // Green Plane
         modelMatrix = glm::mat4(1.0f);
