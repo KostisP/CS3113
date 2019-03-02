@@ -28,8 +28,8 @@ GLuint LoadTexture(const char *filePath) {
     unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
     
     if(image == NULL) {
-        std::cout << "Unable to load image. Make sure the path is correct\n";
-//        assert(false);
+        std::cout << "Unable to load image. Make sure the path is correct\n" << filePath;
+        assert(false);
     }
     
     GLuint retTexture;
@@ -59,11 +59,13 @@ int main(int argc, char *argv[])
     glViewport(0, 0, 640, 360);
     
     ShaderProgram program;
-    program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
+    //program.Load(RESOURCE_FOLDER"vertex.glsl", RESOURCE_FOLDER"fragment.glsl");
+    //program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
     
-    GLuint bluePlaneTexture = LoadTexture(RESOURCE_FOLDER"planeBlue1.png");
-    GLuint redPlaneTexture = LoadTexture(RESOURCE_FOLDER"planeBlue1.png");
-    GLuint laserPlaneTexture = LoadTexture(RESOURCE_FOLDER"planeBlue1.png");
+    GLuint bluePlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeGreen1.png");
+    
+    GLuint redPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeRed1.png");
+    GLuint laserPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/laserRed03.png");
     
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
     glm::mat4 modelMatrix = glm::mat4(1.0f);
@@ -74,7 +76,8 @@ int main(int argc, char *argv[])
     glUseProgram(program.programID);
     
     glClearColor(0.3f, 0.8f, 0.9f, 1.0f);
-
+   
+    
     SDL_Event event;
     bool done = false;
     while (!done) {
@@ -96,9 +99,9 @@ int main(int argc, char *argv[])
         
         
         // Drawing floor
-        float vertices[] = {-1.777, -0.2, 1.777, -0.2, 1.777, 0.2, -1.777, -0.2, 1.777, 0.2, -1.777, 0.2};
+        float floor[] = {-1.777, -0.2, 1.777, -0.2, 1.777, 0.2, -1.777, -0.2, 1.777, 0.2, -1.777, 0.2};
         program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
-        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, floor);
         glEnableVertexAttribArray(program.positionAttribute);
         // float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
         // glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
@@ -106,6 +109,31 @@ int main(int argc, char *argv[])
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // glDisableVertexAttribArray(program.texCoordAttribute);
         glDisableVertexAttribArray(program.positionAttribute);
+        
+        
+       
+        
+        
+        
+        
+        modelMatrix = glm::mat4(1.0f);
+        //modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+        program.SetModelMatrix(modelMatrix);
+        
+        glBindTexture(GL_TEXTURE_2D, bluePlaneTexture);
+        
+        float bluePlane[] = {-0.2, -0.2, 0.2, -0.2, 0.2, 0.2, -0.2, -0.2, 0.2, 0.2, -0.2, 0.2};
+        
+        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, bluePlane);
+        glEnableVertexAttribArray(program.positionAttribute);
+        
+        float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
+        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+        glEnableVertexAttribArray(program.texCoordAttribute);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(program.positionAttribute);
+        glDisableVertexAttribArray(program.texCoordAttribute);
         
         
         
