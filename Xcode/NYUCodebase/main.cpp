@@ -22,7 +22,6 @@
 SDL_Window* displayWindow;
 
 
-
 GLuint LoadTexture(const char *filePath) {
     int w,h,comp;
     unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
@@ -58,8 +57,8 @@ int main(int argc, char *argv[])
     
     glViewport(0, 0, 640, 360);
     
-    ShaderProgram program;
-    ShaderProgram programNonText;
+    ShaderProgram program; // Used for textures
+    ShaderProgram programNonText; // Used for no textures
    
     program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
     programNonText.Load(RESOURCE_FOLDER"vertex.glsl", RESOURCE_FOLDER"fragment.glsl");
@@ -72,7 +71,7 @@ int main(int argc, char *argv[])
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
     glm::mat4 modelMatrix = glm::mat4(1.0f);
     glm::mat4 viewMatrix = glm::mat4(1.0f);
-    
+
     projectionMatrix = glm::ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
     
     glUseProgram(programNonText.programID);
@@ -192,10 +191,6 @@ int main(int argc, char *argv[])
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableVertexAttribArray(program.positionAttribute);
         glDisableVertexAttribArray(program.texCoordAttribute);
-        
-        
-       
-        
         
         SDL_GL_SwapWindow(displayWindow);
     }
