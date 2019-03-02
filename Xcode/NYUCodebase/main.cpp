@@ -60,12 +60,12 @@ int main(int argc, char *argv[])
     
     ShaderProgram program;
     //program.Load(RESOURCE_FOLDER"vertex.glsl", RESOURCE_FOLDER"fragment.glsl");
-    //program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
+    program.Load(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
     
-    GLuint bluePlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeGreen1.png");
+    GLuint redPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeGreen1.png");
     
-    GLuint redPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeRed1.png");
-    GLuint laserPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/laserRed03.png");
+    GLuint greenPlaneTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/planeRed1.png");
+    GLuint laserTexture = LoadTexture("/Users/kostispaschalakis/Desktop/NYU/Spring2019/CS 3113 Game Prog/Personal/CS3113/Xcode/NYUCodebase/laserRed03.png");
     
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
     glm::mat4 modelMatrix = glm::mat4(1.0f);
@@ -88,9 +88,14 @@ int main(int argc, char *argv[])
         }
         glClear(GL_COLOR_BUFFER_BIT);
         
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
+        
         program.SetModelMatrix(modelMatrix);
         program.SetProjectionMatrix(projectionMatrix);
         program.SetViewMatrix(viewMatrix);
+        
         
         
         glm::mat4 modelMatrix = glm::mat4(1.0f);
@@ -103,11 +108,9 @@ int main(int argc, char *argv[])
         program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
         glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, floor);
         glEnableVertexAttribArray(program.positionAttribute);
-        // float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
-        // glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-        //  glEnableVertexAttribArray(program.texCoordAttribute);
+        
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        // glDisableVertexAttribArray(program.texCoordAttribute);
+        
         glDisableVertexAttribArray(program.positionAttribute);
         
         
@@ -115,20 +118,20 @@ int main(int argc, char *argv[])
         
         
         
-        
+        // Green Plane
         modelMatrix = glm::mat4(1.0f);
-        //modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-1.0f, 0.5f, 0.0f));
         program.SetModelMatrix(modelMatrix);
         
-        glBindTexture(GL_TEXTURE_2D, bluePlaneTexture);
+        glBindTexture(GL_TEXTURE_2D, greenPlaneTexture);
         
         float bluePlane[] = {-0.2, -0.2, 0.2, -0.2, 0.2, 0.2, -0.2, -0.2, 0.2, 0.2, -0.2, 0.2};
         
         glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, bluePlane);
         glEnableVertexAttribArray(program.positionAttribute);
         
-        float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
-        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+        float bluePlanetexCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
+        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, bluePlanetexCoords);
         glEnableVertexAttribArray(program.texCoordAttribute);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -137,20 +140,60 @@ int main(int argc, char *argv[])
         
         
         
-        /*
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(1.0f, 0.0f, 0.0f));
-        
-        program.SetModelMatrix(modelMatrix);
-        
-        // draw first object
+      
+        // Red Plane
         modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(-2.0f, 0.0f, 0.0f));
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(1.0f, 0.5f, 0.0f));
+        float angle = 45.0f * (3.1415926f / 180.0f);
+        modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0.0f, 0.0f, 1.0f));
         program.SetModelMatrix(modelMatrix);
         
-        // draw second object
+        glBindTexture(GL_TEXTURE_2D, redPlaneTexture);
         
-         */
+        float redPlane[] = {-0.2, -0.2, 0.2, -0.2, 0.2, 0.2, -0.2, -0.2, 0.2, 0.2, -0.2, 0.2};
+        
+        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, redPlane);
+        glEnableVertexAttribArray(program.positionAttribute);
+        
+        float redPlanetexCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
+        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, redPlanetexCoords);
+        glEnableVertexAttribArray(program.texCoordAttribute);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(program.positionAttribute);
+        glDisableVertexAttribArray(program.texCoordAttribute);
+        
+        
+        
+        
+        
+        
+        //Laser
+        modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
+        angle = 90.0f * (3.1415926f / 180.0f);
+        modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f, 0.6f, 1.0f));
+        program.SetModelMatrix(modelMatrix);
+        
+        glBindTexture(GL_TEXTURE_2D, laserTexture);
+        
+        float laser[] = {-0.2, -0.2, 0.2, -0.2, 0.2, 0.2, -0.2, -0.2, 0.2, 0.2, -0.2, 0.2};
+        
+        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, laser);
+        glEnableVertexAttribArray(program.positionAttribute);
+        
+        float lasertexCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
+        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, lasertexCoords);
+        glEnableVertexAttribArray(program.texCoordAttribute);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(program.positionAttribute);
+        glDisableVertexAttribArray(program.texCoordAttribute);
+        
+        
+       
+        
         
         SDL_GL_SwapWindow(displayWindow);
     }
