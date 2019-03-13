@@ -8,6 +8,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
+#include <cstdlib>
 
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
@@ -38,7 +39,7 @@ public:
     {}
     
     void Draw(ShaderProgram &p) {
-        float points[] = {-width, -height, width, -height, width, height, -width, -height, width, height, -width, height};
+        float points[] = {-width/2, -height/2, width/2, -height/2, width/2, height/2, -width/2, -height/2, width/2, height/2, -width/2, height/2};
         glm::mat4 modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(x, y, 0.0f));
         p.SetModelMatrix(modelMatrix);
@@ -49,6 +50,13 @@ public:
     }
     
 };
+
+
+
+
+
+
+
 
 
 
@@ -91,10 +99,15 @@ int main(int argc, char *argv[]) {
     
     float lastFrameTicks = 0.0f;
     
+    //float angle = 90.0f * (3.1415926f / 180.0f);
     
-    
-    Board left(-1.747f, 0.0f, 0.0f, 0, 0.03f, 0.15f, 0.0f, 0.0f, 0.0f);
-    Board right(1.747f, 0.0f, 0.0f, 0, 0.03f, 0.15f, 0.0f, 0.0f, 0.0f);
+    Board left(-1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, 0.0f, 0.0f, 0.0f);
+    Board right(1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, 0.0f, 0.0f, 0.0f);
+    Board ball(0.0f, 0.0f, 0.0f, 0, 0.08f, 0.08f, 0.0f, 1.0f, 0.5f);
+    float pLeftX = 1.777f;
+    float pRightX = 1.777f;
+    float pLeftY = 1.0f;
+    float pRightY = 1.0f;
     
     program.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     
@@ -124,19 +137,27 @@ int main(int argc, char *argv[]) {
         
         if(event.type == SDL_KEYDOWN) {
             if(keys[SDL_SCANCODE_UP]) {
-                right.y += elapsed * 0.5;
+                right.y += elapsed * 1;
                 
             } else if (keys[SDL_SCANCODE_DOWN]) {
-                right.y -= elapsed * 0.5;
+                right.y -= elapsed * 1;
                 
             }
             
             if(keys[SDL_SCANCODE_LEFT]) {
-                left.y += elapsed * 0.5;
+                left.y += elapsed * 1;
             } else if (keys[SDL_SCANCODE_RIGHT]) {
-                left.y -= elapsed * 0.5;
+                left.y -= elapsed * 1;
             }
        }
+        
+        pLeftX = abs(left.x-ball.x) - (left.width + ball.width)/2;
+        pRightX = abs(right.x-ball.x) - (right.width + ball.width)/2;
+        
+        pLeftY = abs(left.y-ball.y) - (left.height + ball.height)/2;
+        pRightY = abs(right.y-ball.y) - (right.height + ball.height)/2;
+        
+        
         
         
         
@@ -154,40 +175,65 @@ int main(int argc, char *argv[]) {
         if ((left.y - (left.height/2)) <= -1.0f) {
             left.y = -1.0f + (left.height/2);
         }
+        
+        
+        
+        
+        if (pRightX < 0 && pRightY < 0) {
+            ball.direction_x = -1.0f;
+        }
+        if (pLeftX < 0 && pLeftY < 0) {
+            ball.direction_x = 1.0f;
+        }
+        
+        
+        
+        
+        
+        
+        if ((ball.y + (ball.height/2)) > 1.0f) {
+            ball.direction_y = ball.direction_y * -1.0f;
+        }
+        if ((ball.y - (ball.height/2)) < -1.0f) {
+            ball.direction_y = ball.direction_y * -1.0f;
+            
+        }
+        
+        
+        
+        
+        
+        
+        if ((ball.x + (ball.width/2)) >= 1.777f) {
+            ball.x = 0.0f;
+            ball.y = 0.0f;
+            ball.direction_x = -1.0f;
+            ball.direction_y = 0.2f;
+        }
+        if ((ball.x - (ball.width/2)) <= -1.777f) {
+            ball.x = 0.0f;
+            ball.y = 0.0f;
+            ball.direction_x = 1.0f;
+            ball.direction_y = 0.2f;
+        }
+        
+  
+        
+        
+        
+   
+        
+        
+        
 
-      
+        
+        ball.x += ball.direction_x * elapsed * 1.0;
+        ball.y += ball.direction_y * elapsed * 1.0;
         
         
-        // Left Player
         left.Draw(program);
-
-        // Right Player
         right.Draw(program);
-        
-        
-        
-        
-        
-        
-        
-        modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-        program.SetModelMatrix(modelMatrix);
-        
-        
-        float ball[] = {-0.04, -0.04, 0.04, -0.04, 0.04, 0.04, -0.04, -0.04, 0.04, 0.04, -0.04, 0.04};
-        
-        program.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, ball);
-        glEnableVertexAttribArray(program.positionAttribute);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDisableVertexAttribArray(program.positionAttribute);
-        
-        
-        
-        
-        
-        
+        ball.Draw(program);
         
         SDL_GL_SwapWindow(displayWindow);
     }
