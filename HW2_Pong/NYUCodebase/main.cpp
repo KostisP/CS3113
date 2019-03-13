@@ -99,11 +99,11 @@ int main(int argc, char *argv[]) {
     
     float lastFrameTicks = 0.0f;
     
-    //float angle = 90.0f * (3.1415926f / 180.0f);
+    
     
     Board left(-1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, 0.0f, 0.0f, 0.0f);
     Board right(1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, 0.0f, 0.0f, 0.0f);
-    Board ball(0.0f, 0.0f, 0.0f, 0, 0.08f, 0.08f, 0.0f, 1.0f, 0.5f);
+    Board ball(0.0f, 0.0f, 0.0f, 0, 0.08f, 0.08f, 0.5f, 1.0f, 0.3f);
     float pLeftX = 1.777f;
     float pRightX = 1.777f;
     float pLeftY = 1.0f;
@@ -181,9 +181,11 @@ int main(int argc, char *argv[]) {
         
         if (pRightX < 0 && pRightY < 0) {
             ball.direction_x = -1.0f;
+            ball.velocity = 1.5f;
         }
         if (pLeftX < 0 && pLeftY < 0) {
             ball.direction_x = 1.0f;
+            ball.velocity = 1.5f;
         }
         
         
@@ -196,7 +198,6 @@ int main(int argc, char *argv[]) {
         }
         if ((ball.y - (ball.height/2)) < -1.0f) {
             ball.direction_y = ball.direction_y * -1.0f;
-            
         }
         
         
@@ -207,14 +208,20 @@ int main(int argc, char *argv[]) {
         if ((ball.x + (ball.width/2)) >= 1.777f) {
             ball.x = 0.0f;
             ball.y = 0.0f;
+            right.y = 0.0f;
+            left.y = 0.0f;
             ball.direction_x = -1.0f;
-            ball.direction_y = 0.2f;
+            ball.direction_y = 0.3f;
+            ball.velocity = 0.5f;
         }
         if ((ball.x - (ball.width/2)) <= -1.777f) {
             ball.x = 0.0f;
             ball.y = 0.0f;
+            right.y = 0.0f;
+            left.y = 0.0f;
             ball.direction_x = 1.0f;
-            ball.direction_y = 0.2f;
+            ball.direction_y = 0.3f;
+            ball.velocity = 0.5f;
         }
         
   
@@ -227,8 +234,8 @@ int main(int argc, char *argv[]) {
         
 
         
-        ball.x += ball.direction_x * elapsed * 1.0;
-        ball.y += ball.direction_y * elapsed * 1.0;
+        ball.x += ball.direction_x * elapsed * ball.velocity;
+        ball.y += ball.direction_y * elapsed * ball.velocity;
         
         
         left.Draw(program);
