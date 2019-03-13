@@ -19,6 +19,10 @@
 SDL_Window* displayWindow;
 
 
+// Note: using Left Shift and control for left paddle, up and down for right paddle
+
+
+
 class Rectangle {
 public:
     
@@ -160,9 +164,9 @@ void Update() {
             
         }
         
-        if(keys[SDL_SCANCODE_LEFT]) {
+        if(keys[SDL_SCANCODE_LSHIFT]) {
             left.y += elapsed * left.velocity;
-        } else if (keys[SDL_SCANCODE_RIGHT]) {
+        } else if (keys[SDL_SCANCODE_LCTRL]) {
             left.y -= elapsed * left.velocity;
         }
     }
