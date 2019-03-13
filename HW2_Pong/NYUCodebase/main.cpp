@@ -47,7 +47,6 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableVertexAttribArray(p.positionAttribute);
     }
-    
 };
 
 
@@ -60,39 +59,40 @@ void Update();
 void Render();
 void Cleanup();
 
-void pointWon();
+void pointWon(); // Resets paddles and ball, ball will move towards whoever won the point
 
 
-
-// Defining Globals
+// Globals
 ShaderProgram program;
 float lastFrameTicks;
 
-const float ballSpeedBeforeFirstToutch = 0.5f;
+
+const float ballSpeedBeforeFirstToutch = 0.8f;
 const float ballSpeedFinal = 1.5f;
 const float reflectionAngle = 0.3f;
-const float padleSpeed = 1.0f;
+const float paddleSpeed = 1.0f;
+
+
+// X and Y for projection matrix
+const float projectionX = 1.777;
+const float projectionY = 1.0;
 
 
 
 
-Rectangle left(-1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, padleSpeed, 0.0f, 0.0f);
-Rectangle right(1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, padleSpeed, 0.0f, 0.0f);
+
+Rectangle left(-1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, paddleSpeed, 0.0f, 0.0f);
+Rectangle right(1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, paddleSpeed, 0.0f, 0.0f);
 Rectangle ball(0.0f, 0.0f, 0.0f, 0, 0.08f, 0.08f, ballSpeedBeforeFirstToutch, 1.0f, reflectionAngle);
-float pLeftX = 1.777f;
-float pRightX = 1.777f;
-float pLeftY = 1.0f;
-float pRightY = 1.0f;
+
+// Used to determine distances for collisions
+float pLeftX = projectionX;
+float pRightX = projectionX;
+float pLeftY = projectionY;
+float pRightY = projectionY;
 
 SDL_Event event;
 bool done;
-
-
-
-
-
-
-
 
 
 
@@ -112,9 +112,6 @@ int main(int argc, char *argv[]) {
 
 
 
-
-
-
 void Setup() {
     SDL_Init(SDL_INIT_VIDEO);
     displayWindow = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, SDL_WINDOW_OPENGL);
@@ -129,20 +126,15 @@ void Setup() {
     
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
     glm::mat4 viewMatrix = glm::mat4(1.0f);
-    
-    
-    projectionMatrix = glm::ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
+    projectionMatrix = glm::ortho(-projectionX, projectionX, -projectionY, projectionY, -projectionY, projectionY);
     
     glUseProgram(program.programID);
     
     program.SetProjectionMatrix(projectionMatrix);
     program.SetViewMatrix(viewMatrix);
-    
-    lastFrameTicks = 0.0f;
-    
-    
     program.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     
+    lastFrameTicks = 0.0f;
     done = false;
 }
 
@@ -157,7 +149,6 @@ void ProcessEvents() {
 
 
 
-
 void Update() {
     float ticks = (float)SDL_GetTicks()/1000.0f;
     float elapsed = ticks - lastFrameTicks;
@@ -165,6 +156,7 @@ void Update() {
     
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
+    // Input Movement
     if(event.type == SDL_KEYDOWN) {
         if(keys[SDL_SCANCODE_UP]) {
             right.y += elapsed * right.velocity;
@@ -174,15 +166,15 @@ void Update() {
             
         }
         
-        if(keys[SDL_SCANCODE_W]) {
+        if(keys[SDL_SCANCODE_LEFT]) {
             left.y += elapsed * left.velocity;
-        } else if (keys[SDL_SCANCODE_S]) {
+        } else if (keys[SDL_SCANCODE_RIGHT]) {
             left.y -= elapsed * left.velocity;
         }
     }
     
     
-    
+    // Calculates Distances for collision
     pLeftX = abs(left.x-ball.x) - (left.width + ball.width)/2;
     pRightX = abs(right.x-ball.x) - (right.width + ball.width)/2;
     pLeftY = abs(left.y-ball.y) - (left.height + ball.height)/2;
@@ -190,29 +182,33 @@ void Update() {
     
     
     
-    if ((right.y + (right.height/2)) >= 1.0f) {
-        right.y = 1.0f - (right.height/2);
+    // Determines if right paddle is on screen boarder
+    if ((right.y + (right.height/2)) >= projectionY) {
+        right.y = projectionY - (right.height/2);
     }
-    if ((right.y - (right.height/2)) <= -1.0f) {
-        right.y = -1.0f + (right.height/2);
-    }
-    
-    
-    if ((left.y + (left.height/2)) >= 1.0f) {
-        left.y = 1.0f - (left.height/2);
-    }
-    if ((left.y - (left.height/2)) <= -1.0f) {
-        left.y = -1.0f + (left.height/2);
+    if ((right.y - (right.height/2)) <= -projectionY) {
+        right.y = -projectionY + (right.height/2);
     }
     
     
     
+    // Determines if left paddle is on screen boarder
+    if ((left.y + (left.height/2)) >= projectionY) {
+        left.y = projectionY - (left.height/2);
+    }
+    if ((left.y - (left.height/2)) <= -projectionY) {
+        left.y = -projectionY + (left.height/2);
+    }
     
+    
+    
+    // Collision with right paddle
     if (pRightX < 0 && pRightY < 0) {
         ball.direction_x *= -1.0f;
         ball.velocity = ballSpeedFinal;
     }
     
+    // Collision with left paddle
     if (pLeftX < 0 && pLeftY < 0) {
         ball.direction_x *= -1.0f;
         ball.velocity = ballSpeedFinal;
@@ -221,29 +217,23 @@ void Update() {
     
     
     
-    
-    
-    if ((ball.y + (ball.height/2)) > 1.0f) {
+    if ((ball.y + (ball.height/2)) > projectionY) {
         ball.direction_y *= -1.0f;
     }
-    if ((ball.y - (ball.height/2)) < -1.0f) {
+    if ((ball.y - (ball.height/2)) < -projectionY) {
         ball.direction_y *= -1.0f;
     }
     
     
     
-    
-    
-    
-    if ((ball.x + (ball.width/2)) >= 1.777f) {
+    // Left Player Scores
+    if ((ball.x + (ball.width/2)) >= projectionX) {
         pointWon();
     }
-    
-    if ((ball.x - (ball.width/2)) <= -1.777f) {
+    // Right Player Scores
+    if ((ball.x - (ball.width/2)) <= -projectionX) {
         pointWon();
     }
-    
-    
     
     ball.x += ball.direction_x * elapsed * ball.velocity;
     ball.y += ball.direction_y * elapsed * ball.velocity;
