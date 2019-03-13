@@ -52,12 +52,11 @@ public:
 
 
 
-
 void Setup();
 void ProcessEvents();
 void Update();
 void Render();
-void Cleanup();
+
 
 void pointWon(); // Resets paddles and ball, ball will move towards whoever won the point
 
@@ -78,18 +77,10 @@ const float projectionX = 1.777;
 const float projectionY = 1.0;
 
 
-
-
-
 Rectangle left(-1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, paddleSpeed, 0.0f, 0.0f);
 Rectangle right(1.747f, 0.0f, 0.0f, 0, 0.06f, 0.3f, paddleSpeed, 0.0f, 0.0f);
 Rectangle ball(0.0f, 0.0f, 0.0f, 0, 0.08f, 0.08f, ballSpeedBeforeFirstToutch, 1.0f, reflectionAngle);
 
-// Used to determine distances for collisions
-float pLeftX = projectionX;
-float pRightX = projectionX;
-float pLeftY = projectionY;
-float pRightY = projectionY;
 
 SDL_Event event;
 bool done;
@@ -103,7 +94,7 @@ int main(int argc, char *argv[]) {
         ProcessEvents();
         Update();
         Render();
-        Cleanup();
+        SDL_GL_SwapWindow(displayWindow);
     }
     SDL_Quit();
     return 0;
@@ -139,6 +130,8 @@ void Setup() {
 }
 
 
+
+
 void ProcessEvents() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
@@ -146,6 +139,7 @@ void ProcessEvents() {
         }
     }
 }
+
 
 
 
@@ -175,10 +169,10 @@ void Update() {
     
     
     // Calculates Distances for collision
-    pLeftX = abs(left.x-ball.x) - (left.width + ball.width)/2;
-    pRightX = abs(right.x-ball.x) - (right.width + ball.width)/2;
-    pLeftY = abs(left.y-ball.y) - (left.height + ball.height)/2;
-    pRightY = abs(right.y-ball.y) - (right.height + ball.height)/2;
+    float pLeftX = abs(left.x-ball.x) - (left.width + ball.width)/2;
+    float pRightX = abs(right.x-ball.x) - (right.width + ball.width)/2;
+    float pLeftY = abs(left.y-ball.y) - (left.height + ball.height)/2;
+    float pRightY = abs(right.y-ball.y) - (right.height + ball.height)/2;
     
     
     
@@ -239,6 +233,9 @@ void Update() {
     ball.y += ball.direction_y * elapsed * ball.velocity;
 }
 
+
+
+
 void pointWon() {
     ball.x = 0.0f;
     ball.y = 0.0f;
@@ -248,6 +245,10 @@ void pointWon() {
     ball.direction_x *= -1.0f;
     ball.velocity = ballSpeedBeforeFirstToutch;
 }
+
+
+
+
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -260,9 +261,6 @@ void Render() {
 }
 
 
-void Cleanup() {
-    SDL_GL_SwapWindow(displayWindow);
-}
 
 
 
