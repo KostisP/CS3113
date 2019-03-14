@@ -19,7 +19,7 @@
 SDL_Window* displayWindow;
 
 
-// Note: using Left Shift and control for left paddle, up and down for right paddle
+// Note: using W ans S for left paddle, up and down for right paddle
 
 
 
@@ -141,6 +141,11 @@ void ProcessEvents() {
         if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
             done = true;
         }
+        
+        
+        
+        
+        
     }
 }
 
@@ -155,21 +160,19 @@ void Update() {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
     // Input Movement
-    if(event.type == SDL_KEYDOWN) {
-        if(keys[SDL_SCANCODE_UP]) {
-            right.y += elapsed * right.velocity;
+    if(keys[SDL_SCANCODE_UP]) {
+        right.y += elapsed * right.velocity;
             
-        } else if (keys[SDL_SCANCODE_DOWN]) {
-            right.y -= elapsed * right.velocity;
-            
-        }
-        
-        if(keys[SDL_SCANCODE_LSHIFT]) {
-            left.y += elapsed * left.velocity;
-        } else if (keys[SDL_SCANCODE_LCTRL]) {
-            left.y -= elapsed * left.velocity;
-        }
+    } else if (keys[SDL_SCANCODE_DOWN]) {
+        right.y -= elapsed * right.velocity;
     }
+        
+    if(keys[SDL_SCANCODE_W]) {
+        left.y += elapsed * left.velocity;
+    } else if (keys[SDL_SCANCODE_S]) {
+        left.y -= elapsed * left.velocity;
+    }
+
     
     
     // Calculates Distances for collision
