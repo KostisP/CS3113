@@ -186,6 +186,19 @@ void endGameText(ShaderProgram &program, GLuint &font) {
 }
 
 
+// Checks for colision between two Entities
+bool checkCollision(Entity &one, Entity &two) {
+    if (one.position.y -  0.5 * one.size < two.position.y + 0.5 * two.size && one.position.y + 0.5 * one.size > two.position.y - 0.5 * two.size) {
+        if (one.position.x + 0.5 * one.size * one.width / one.height > two.position.x - 0.5 * two.size * two.width / two.height
+            && one.position.x - 0.5 * one.size * one.width / one.height < two.position.x + 0.5 * two.size * two.width / two.height) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
 
 // Globals
 enum GameMode {MAIN_MENU, GAME, END_GAME};
@@ -235,8 +248,10 @@ int main(int argc, char *argv[]) {
     SheetSprite laserSprite(spriteSheet, 858.0f / 1024.0f, 230.0f / 1024.0f, 9.0f / 1024.0f, 54.0f / 1024.0f, 0.2f);
     
     state.spaceShip = Entity(&spaceShipSprite, 0.0f, -1.5f, 99.0f, 75.0f, 1.0f, 0.3f);
+    
     state.laser = Entity(&laserSprite, 0, 0, 9.0f, 54.0f, 5.0f, 0.2f);
     state.laser.position.y = largeY;
+    
     for (float j = -0.8; j <= 0.8; j += 0.2f) {
         for (float i = 1.5; i >= 0.8; i -= 0.2f) {
             state.invaders.push_back(Entity(&invaderSprite, j, i, 93.0f, 84.0f, 0.04f, 0.12f));
@@ -255,6 +270,12 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+
+
+
+bool shouldRemoveInvader(Entity& invader) {
+    return !(invader.position.x < projectionX);
+}
 
 
 
@@ -300,27 +321,6 @@ void ProcessEvents() {
     }
 }
 
-
-
-
-// Checks for colision between two Entities
-bool checkCollision(Entity &one, Entity &two) {
-    if (one.position.y -  0.5 * one.size < two.position.y + 0.5 * two.size && one.position.y + 0.5 * one.size > two.position.y - 0.5 * two.size) {
-        if (one.position.x + 0.5 * one.size * one.width / one.height > two.position.x - 0.5 * two.size * two.width / two.height
-            && one.position.x - 0.5 * one.size * one.width / one.height < two.position.x + 0.5 * two.size * two.width / two.height) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-
-
-
-bool shouldRemoveInvader(Entity& invader) {
-    return !(invader.position.x < projectionX);
-}
 
 
 
