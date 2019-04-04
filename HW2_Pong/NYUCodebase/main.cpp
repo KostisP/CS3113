@@ -141,11 +141,7 @@ void ProcessEvents() {
         if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
             done = true;
         }
-        
-        
-        
-        
-        
+    
     }
 }
 
