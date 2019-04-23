@@ -3,6 +3,7 @@
 // collect coins
 
 
+
 #ifdef _WINDOWS
 #include <GL/glew.h>
 #endif
@@ -382,6 +383,8 @@ void Setup();
 void ProcessEvents();
 void Update(float timestep);
 void Render();
+
+
 
 
 
