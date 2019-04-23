@@ -282,6 +282,7 @@ void DrawText(ShaderProgram &program, int fontTexture, std::string text, float s
         });
     }
     
+    
     glBindTexture(GL_TEXTURE_2D, fontTexture);
     glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
     glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
