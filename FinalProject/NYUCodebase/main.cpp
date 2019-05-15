@@ -545,8 +545,6 @@ switch(mode) {
 
 void genTileMap() {
     
-   
-    
     float spriteWidth = 1.0f/(float)spriteCountX;
     float spriteHeight = 1.0f/(float)spriteCountY;
     for(int y=0; y < LEVEL_HEIGHT; y++) {
@@ -612,7 +610,6 @@ void renderTileMap() {
 
 void resetGame() {
 
-   
     levelData = NULL;
     
     texxCoordData.clear();
@@ -670,9 +667,8 @@ int main(int argc, char *argv[]) {
         }
         accumulator = elapsed;
         
-        
+
         Render();
-        
         
         SDL_GL_SwapWindow(displayWindow);
     }
