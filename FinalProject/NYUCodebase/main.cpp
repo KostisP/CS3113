@@ -1,3 +1,7 @@
+
+
+//You have to get close to the enemies to attack
+
 #ifdef _WINDOWS
 #include <GL/glew.h>
 #endif
