@@ -44,7 +44,7 @@
 		4316629D228A59BA001B091B /* hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hit.wav; sourceTree = "<group>"; };
 		431662A1228A643B001B091B /* loop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = loop.wav; path = ../../../../../../../loop.wav; sourceTree = "<group>"; };
 		43503B80226ECCD3003AB425 /* font2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font2.png; sourceTree = "<group>"; };
-		43973D9E228D1A7400B63F36 /* loop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = loop.wav; path = ../../../../../../../loop.wav; sourceTree = "<group>"; };
+		43973D9E228D1A7400B63F36 /* loop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = loop.wav; sourceTree = "<group>"; };
 		6D5A86AA19AE5C710066C1FD /* NYUCodebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NYUCodebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D5A86AD19AE5C710066C1FD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D5A86B019AE5C710066C1FD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
